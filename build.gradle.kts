@@ -21,6 +21,7 @@ version = properties("pluginVersion")
 
 // Configure project's dependencies
 repositories {
+    google()
     mavenCentral()
 }
 
@@ -32,6 +33,9 @@ intellij {
 
     // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
     plugins.set(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
+
+    // Require the Android plugin (Gradle will choose the correct version):
+    plugins.set(listOf("android"))
 }
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
@@ -46,6 +50,23 @@ qodana {
     reportPath.set(projectDir.resolve("build/reports/inspections").canonicalPath)
     saveReport.set(true)
     showReport.set(System.getenv("QODANA_SHOW_REPORT")?.toBoolean() ?: false)
+}
+
+dependencies {
+    implementation("com.squareup:kotlinpoet:1.12.0") {
+        exclude(module = "kotlin-reflect")
+    }
+    // https://mvnrepository.com/artifact/com.google.android/android
+    implementation("com.google.android:android:4.1.1.4")
+}
+
+buildscript {
+    repositories {
+        google()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:7.1.1")
+    }
 }
 
 tasks {
@@ -88,6 +109,12 @@ tasks {
                 getOrNull(properties("pluginVersion")) ?: getLatest()
             }.toHTML()
         })
+    }
+
+    runIde {
+        // Absolute path to installed target 3.5 Android Studio to use as
+        // IDE Development Instance (the "Contents" directory is macOS specific):
+        ideDir.set(file("/Applications/Android Studio.app/Contents"))
     }
 
     // Configure UI tests plugin

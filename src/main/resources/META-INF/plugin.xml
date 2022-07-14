@@ -5,14 +5,21 @@
     <vendor>panatchaiv22</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.android</depends>
+    <depends>com.intellij.modules.androidstudio</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.panatchaiv22.stringresourcekeyidgenerator.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.panatchaiv22.stringresourcekeyidgenerator.services.MyProjectService"/>
+        <applicationService
+                serviceImplementation="com.github.panatchaiv22.stringresourcekeyidgenerator.services.MyApplicationService"/>
+        <projectService
+                serviceImplementation="com.github.panatchaiv22.stringresourcekeyidgenerator.services.MyProjectService"/>
     </extensions>
 
     <applicationListeners>
         <listener class="com.github.panatchaiv22.stringresourcekeyidgenerator.listeners.MyProjectManagerListener"
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
+
+        <listener class="com.github.panatchaiv22.stringresourcekeyidgenerator.listeners.MyApplicationListener"
+                  topic="com.intellij.openapi.fileEditor.FileDocumentManagerListener"/>
     </applicationListeners>
 </idea-plugin>
